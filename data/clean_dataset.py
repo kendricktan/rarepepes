@@ -1,6 +1,7 @@
 import os
 import argparse
 import glob
+import sys
 
 import skimage.color as skcolor
 import skimage.io as skio
@@ -14,6 +15,20 @@ warnings.filterwarnings("ignore")
 
 from tqdm import tqdm
 
+N_KEY = False
+Y_KEY = False
+
+
+def plt_keypress(e):
+    global N_KEY, Y_KEY
+    sys.stdout.flush()
+
+    if e.key == 'y':
+        Y_KEY = True
+    elif e.key == 'n':
+        N_KEY = True
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pepe cleanser')
     parser.add_argument('--img-dir', required=True, type=str)
@@ -23,6 +38,22 @@ if __name__ == '__main__':
     files = glob.glob(os.path.join(args.img_dir, '*.png')) + \
         glob.glob(os.path.join(args.img_dir, '*.jpg'))
 
+    # Contains canny applied to filtered images
+    canny_out_dir = os.path.join(args.out_dir, 'x')
+    if not os.path.exists(canny_out_dir):
+        os.makedirs(canny_out_dir)
+
+    # Contains filtered images
+    raw_out_dir = os.path.join(args.out_dir, 'y')
+    if not os.path.exists(raw_out_dir):
+        os.makedirs(raw_out_dir)
+
+    # Interactive mode
+    plt.ion()
+    fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+    fig.canvas.mpl_connect('key_press_event', plt_keypress)
+
+    img_idx = 0
     for i in tqdm(range(len(files))):
         f = files[i]
         filename = f.split('/')[-1]
@@ -39,4 +70,35 @@ if __name__ == '__main__':
         edges = skfeature.canny(gray)
         edges = edges * 255
 
-        skio.imsave(os.path.join(args.out_dir, '{}'.format(filename)), edges)
+        # Clear axis
+        plt.cla()
+
+        # Plot and compare
+        ax1.clear()
+        ax1.imshow(img)
+        ax1.set_title('original')
+
+        ax2.clear()
+        ax2.imshow(edges)
+        ax2.set_title('edges')
+
+        # Update plot
+        plt.draw()
+
+        while not Y_KEY and not N_KEY:
+            plt.waitforbuttonpress(0)
+
+        # If user hits 'Y' then save image
+        if Y_KEY:
+            skio.imsave(os.path.join(
+                raw_out_dir, '{}.png'.format(img_idx)), img)
+            skio.imsave(os.path.join(canny_out_dir,
+                                     '{}.png'.format(img_idx)), edges)
+            tqdm.write('Saved {}.png'.format(img_idx))
+            img_idx += 1
+
+        else:
+            tqdm.write('Skipped image')
+
+        Y_KEY = False
+        N_KEY = False
