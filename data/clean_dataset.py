@@ -15,6 +15,7 @@ warnings.filterwarnings("ignore")
 
 from tqdm import tqdm
 
+# Fucking imperative programming :-(
 N_KEY = False
 Y_KEY = False
 
@@ -30,11 +31,15 @@ def plt_keypress(e):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Pepe cleanser')
+    parser = argparse.ArgumentParser(description='Pepe data cleanser')
     parser.add_argument('--img-dir', required=True, type=str)
     parser.add_argument('--out-dir', required=True, type=str)
     args = parser.parse_args()
 
+    print('Welcome to pepe cleanser, press "y" to add displayed'
+          'image to database and "n" to skip displayed image')
+
+    # Images
     files = glob.glob(os.path.join(args.img_dir, '*.png')) + \
         glob.glob(os.path.join(args.img_dir, '*.jpg'))
 
