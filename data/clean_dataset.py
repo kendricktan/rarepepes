@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     for i in tqdm(range(len(files))):
         f = files[i]
-        f_ext = f.split('/')[-1].replace(' ', '').split('.')[-1]
+        filename = f.split('/')[-1]
 
         # Get image and convert to grayscale
         img = skio.imread(f)
@@ -39,4 +39,4 @@ if __name__ == '__main__':
         edges = skfeature.canny(gray)
         edges = edges * 255
 
-        skio.imsave(os.path.join(args.out_dir, '{}.{}'.format(i, f_ext)), edges)
+        skio.imsave(os.path.join(args.out_dir, '{}'.format(filename)), edges)
