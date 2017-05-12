@@ -2,6 +2,7 @@ import os
 import glob
 import h5py
 import random
+import PIL.ImageOps
 import torch
 import torch.utils.data as data
 import numpy as np
@@ -24,12 +25,15 @@ def random_crop(img_size, s):
 
 
 class PepeLoader(data.Dataset):
-    def __init__(self, imgdir, random_seed=42, transform=None, train=True):
+    def __init__(self, imgdir, invert_x=True, random_seed=42, transform=None, train=True):
         self.x_dir = sorted(glob.glob(os.path.join(
             imgdir, os.path.join('x', '*.png'))))
         self.y_dir = sorted(glob.glob(os.path.join(
             imgdir, os.path.join('y', '*.png'))))
 
+        # Invert x (black to white and vice-versa)
+        # Because script in data/clean_dataset.py wasnt inverted
+        self.invert_x = invert_x
         self.transform = transform
         self.train = train
 
@@ -53,6 +57,9 @@ class PepeLoader(data.Dataset):
         # Open file as Pillow Image
         x_img = Image.open(self.x_dir[idx])
         y_img = Image.open(self.y_dir[idx])
+
+        if self.invert_x:
+            x_img = PIL.ImageOps.invert(x_img)
 
         x_img = self.scale(x_img.convert('RGB'))
         y_img = self.scale(y_img.convert('RGB'))

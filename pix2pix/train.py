@@ -18,16 +18,18 @@ parser.add_argument('--beta', default=0.5, type=float)
 parser.add_argument('--lamb', default=100, type=float)
 parser.add_argument('--cuda', default='true', type=str)
 parser.add_argument('--resume', default='', type=str)
+parser.add_argument('--crayon', default='', type=str)
 parser.add_argument('--mode', default='train', type=str,
                     help='[train | generate | test]')
 args, unknown = parser.parse_known_args()
 
 cuda = 'true' in args.cuda.lower()
 train = 'train' in args.mode.lower()
+crayon = 'true' in args.crayon.lower()
 
 if __name__ == '__main__':
     # in_dim, h_dim, z_dim
-    trainer = Pix2PixTrainer(3, 3, 64, 64, beta=args.beta, lamb=args.lamb, lr=args.lr, cuda=cuda)
+    trainer = Pix2PixTrainer(3, 3, 64, 64, beta=args.beta, lamb=args.lamb, lr=args.lr, cuda=cuda, crayon=crayon)
 
     if args.resume:
         trainer.load(args.resume)

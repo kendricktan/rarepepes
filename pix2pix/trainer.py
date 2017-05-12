@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
 
+from pycrayon import CrayonClient
 from PIL import Image
 from torch.autograd import Variable
 from models import Generator, Discriminator
@@ -17,7 +18,7 @@ from utils import normalize
 
 class Pix2PixTrainer:
 
-    def __init__(self, nic, noc, ngf, ndf, beta=0.5, lamb=100, lr=1e-3, cuda=True):
+    def __init__(self, nic, noc, ngf, ndf, beta=0.5, lamb=100, lr=1e-3, cuda=True, crayon=False):
         """
         Args:
             nic: Number of input channel
@@ -28,6 +29,15 @@ class Pix2PixTrainer:
         """
         self.cuda = cuda
         self.start_epoch = 0
+
+        if crayon:
+            self.cc = CrayonClient(hostname="localhost", port=8889)
+
+            try:
+                self.logger = self.cc.create_experiment('pix2pix')
+            except:
+                self.cc.remove_experiment('pix2pix')
+                self.logger = self.cc.create_experiment('pix2pix')
 
         self.gen = self.cudafy(Generator(nic, noc, ngf))
         self.dis = self.cudafy(Discriminator(nic, noc, ndf))
@@ -94,6 +104,11 @@ class Pix2PixTrainer:
             gen_loss.backward()
             self.gen_optim.step()
 
+            # Pycrayon or nah
+            if self.crayon:
+                self.logger.add_scalar_value('pix2pix_gen_loss', gen_loss.data[0])
+                self.logger.add_scalar_value('pix2pix_dis_loss', dis_loss.data[0])
+
             if idx % 50 == 0:
                 tqdm.write('Epoch: {} [{}/{}]\t'
                            'D Loss: {:.4f}\t'
@@ -152,10 +167,8 @@ class Pix2PixTrainer:
 
     def save(self, e, filename='rarepepe_weights.tar'):
         torch.save({
-            'f_xy': self.f_xy.state_dict(),
-            'g_yx': self.g_yx.state_dict(),
-            'dx': self.dis_x.state_dict(),
-            'dy': self.dis_y.state_dict(),
+            'gen': self.gen.state_dict(),
+            'dis': self.dis.state_dict(),
             'epoch': e + 1
         }, 'epoch{}_{}'.format(e, filename))
         print('Saved model state')
@@ -164,10 +177,8 @@ class Pix2PixTrainer:
         if os.path.isfile(filedir):
             checkpoint = torch.load(filedir)
 
-            self.f_xy.load_state_dict(checkpoint['f_xy'])
-            self.g_yx.load_state_dict(checkpoint['g_yx'])
-            self.dis_x.load_state_dict(checkpoint['dx'])
-            self.dis_y.load_state_dict(checkpoint['dy'])
+            self.gen.load_state_dict(checkpoint['gen'])
+            self.dis.load_state_dict(checkpoint['dis'])
             self.start_epoch = checkpoint['epoch']
 
             print('Model state loaded')
