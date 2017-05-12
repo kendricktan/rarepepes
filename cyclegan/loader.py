@@ -1,3 +1,4 @@
+import random
 import os
 import glob
 import h5py
@@ -34,11 +35,16 @@ class PepeLoader(data.Dataset):
         idx = self.idxes[index]
 
         # Open file as Pillow Image
-        x_img = Image.open(self.x_dir[idx])
-        y_img = Image.open(self.y_dir[idx])
+        x_img = Image.open(self.x_dir[idx]).resize((256, 256), Image.BILINEAR)
+        y_img = Image.open(self.y_dir[idx]).resize((256, 256), Image.BILINEAR)
 
         x_img = x_img.convert('RGB')
         y_img = y_img.convert('RGB')
+
+        # Randomly flip it
+        if random.random() < 0.5:
+            x_img = x_img.transpose(Image.FLIP_LEFT_RIGHT)
+            y_img = y_img.transpose(Image.FLIP_LEFT_RIGHT)
 
         if self.transform:
             x_img = self.transform(x_img)

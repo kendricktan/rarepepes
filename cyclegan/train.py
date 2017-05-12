@@ -33,9 +33,6 @@ if __name__ == '__main__':
     dataset = PepeLoader(
         args.img_dir,
         transform=transforms.Compose([
-            transforms.Scale(300),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(256),
             transforms.ToTensor(),
         ]),
         train=train

@@ -150,6 +150,7 @@ class CycleGANTrainer:
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(
             2, 2, sharex='col', sharey='row'
         )
+        f.suptitle('epoch {}'.format(e))
 
         ax1.imshow(orig_x_np)
         ax1.set_title('x')
