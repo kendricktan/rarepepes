@@ -5,8 +5,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 import random
 import numpy as np
-import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
+import matplotlib.pyplot as plt
 
 from pycrayon import CrayonClient
 from PIL import Image
