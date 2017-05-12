@@ -46,7 +46,7 @@ class PepeLoader(data.Dataset):
         np.random.shuffle(self.idxes)
 
         # Scale image
-        self.scale = transforms.Scale(256)
+        self.scale = transforms.Scale((256, 256))
 
     def __getitem__(self, index):
         if not self.train:
@@ -68,6 +68,7 @@ class PepeLoader(data.Dataset):
         if random.random() < 0.5:
             x_img = x_img.transpose(Image.FLIP_LEFT_RIGHT)
             y_img = y_img.transpose(Image.FLIP_LEFT_RIGHT)
+
 
         if self.transform:
             x_img = self.transform(x_img)
