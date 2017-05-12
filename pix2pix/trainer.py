@@ -30,6 +30,7 @@ class Pix2PixTrainer:
         self.cuda = cuda
         self.start_epoch = 0
 
+        self.crayon = crayon
         if crayon:
             self.cc = CrayonClient(hostname="localhost", port=8889)
 
