@@ -15,6 +15,7 @@ parser.add_argument('--epoch', default=500, type=int)
 parser.add_argument('--batch-size', default=4, type=int)
 parser.add_argument('--lr', default=1e-3, type=float)
 parser.add_argument('--cuda', default='true', type=str)
+parser.add_argument('--crayon', default='true', type=str)
 parser.add_argument('--resume', default='', type=str)
 parser.add_argument('--mode', default='train', type=str,
                     help='[train | generate | test]')
@@ -22,10 +23,11 @@ args, unknown = parser.parse_known_args()
 
 cuda = 'true' in args.cuda.lower()
 train = 'train' in args.mode.lower()
+crayon = 'crayon' in args.mode.lower()
 
 if __name__ == '__main__':
     # in_dim, h_dim, z_dim
-    trainer = CycleGANTrainer([3, 8, 32, 64], [32, 8, 3], lr=args.lr, cuda=cuda)
+    trainer = CycleGANTrainer([3, 8, 32, 64], [32, 8, 3], lr=args.lr, cuda=cuda, crayon=crayon)
 
     if args.resume:
         trainer.load(args.resume)
