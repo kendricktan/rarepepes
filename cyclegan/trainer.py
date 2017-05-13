@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
 
+from pycrayon import CrayonClient
 from PIL import Image
 from torch.autograd import Variable
 from models import GeneratorCNN, DiscriminatorCNN
@@ -17,9 +18,19 @@ from utils import normalize
 
 class CycleGANTrainer:
 
-    def __init__(self, conv_dims, convt_dims, lr=1e-3, cuda=True):
+    def __init__(self, conv_dims, convt_dims, lr=1e-3, cuda=True, crayon=True):
         self.cuda = cuda
         self.start_epoch = 0
+
+        self.crayon = crayon
+        if crayon:
+            self.cc = CrayonClient(hostname="localhost", port=8889)
+
+            try:
+                self.logger = self.cc.create_experiment('rarepepe_cyclegan')
+            except:
+                self.cc.remove_experiment('rarepepe_cyclegan')
+                self.logger = self.cc.create_experiment('rarepepe_cyclegan')
 
         # F(x) -> y
         self.f_xy = self.cudafy(GeneratorCNN(conv_dims, convt_dims))
@@ -96,6 +107,11 @@ class CycleGANTrainer:
             loss_gen.backward()
             self.gen_optim.step()
             self.reset_gradients()
+
+            # Pycrayon or nah
+            if self.crayon:
+                self.logger.add_scalar_value('rarepepe_gen_loss', loss_gen.data[0])
+                self.logger.add_scalar_value('rarepepe_dis_loss', loss_dis.data[0])
 
             if idx % 50 == 0:
                 tqdm.write(
