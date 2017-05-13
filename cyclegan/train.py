@@ -1,3 +1,6 @@
+import matplotlib as mpl
+mpl.use('Agg')
+
 import time
 import argparse
 import torch
@@ -23,7 +26,7 @@ args, unknown = parser.parse_known_args()
 
 cuda = 'true' in args.cuda.lower()
 train = 'train' in args.mode.lower()
-crayon = 'crayon' in args.mode.lower()
+crayon = 'true' in args.crayon.lower()
 
 if __name__ == '__main__':
     # in_dim, h_dim, z_dim
