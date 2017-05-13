@@ -45,9 +45,6 @@ class PepeLoader(data.Dataset):
         self.idxes = np.arange(self._length)
         np.random.shuffle(self.idxes)
 
-        # Scale image
-        self.scale = transforms.Scale((256, 256))
-
     def __getitem__(self, index):
         if not self.train:
             index += self.train_length
@@ -55,20 +52,16 @@ class PepeLoader(data.Dataset):
         idx = self.idxes[index]
 
         # Open file as Pillow Image
-        x_img = Image.open(self.x_dir[idx]).resize((256, 256), Image.BILINEAR)
-        y_img = Image.open(self.y_dir[idx]).resize((256, 256), Image.BILINEAR)
+        x_img = Image.open(self.x_dir[idx]).convert('RGB')
+        y_img = Image.open(self.y_dir[idx]).convert('RGB')
 
         if self.invert_x:
             x_img = PIL.ImageOps.invert(x_img)
-
-        x_img = x_img.convert('RGB')
-        y_img = y_img.convert('RGB')
 
         # Randomly flip
         if random.random() < 0.5:
             x_img = x_img.transpose(Image.FLIP_LEFT_RIGHT)
             y_img = y_img.transpose(Image.FLIP_LEFT_RIGHT)
-
 
         if self.transform:
             x_img = self.transform(x_img)

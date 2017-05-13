@@ -1,6 +1,7 @@
 import matplotlib as mpl
 mpl.use('Agg')
 
+import os
 import time
 import argparse
 import torch
@@ -9,49 +10,55 @@ import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 
+from tqdm import tqdm
+from options import TrainOptions
 from loader import PepeLoader
-from trainer import Pix2PixTrainer
+from models import Pix2PixModel
 
-parser = argparse.ArgumentParser(description='rarepepe trainer')
-parser.add_argument('--img-dir', required=True, type=str)
-parser.add_argument('--epoch', default=500, type=int)
-parser.add_argument('--batch-size', default=4, type=int)
-parser.add_argument('--lr', default=1e-3, type=float)
-parser.add_argument('--beta', default=0.5, type=float)
-parser.add_argument('--lamb', default=100, type=float)
-parser.add_argument('--cuda', default='true', type=str)
-parser.add_argument('--resume', default='', type=str)
-parser.add_argument('--crayon', default='', type=str)
-parser.add_argument('--mode', default='train', type=str,
-                    help='[train | generate | test]')
-args, unknown = parser.parse_known_args()
+# CUDA_VISIBLE_DEVICES
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-cuda = 'true' in args.cuda.lower()
-train = 'train' in args.mode.lower()
-crayon = 'true' in args.crayon.lower()
+# Parse options
+opt = TrainOptions().parse()
 
 if __name__ == '__main__':
-    # in_dim, h_dim, z_dim
-    trainer = Pix2PixTrainer(3, 3, 64, 64, beta=args.beta, lamb=args.lamb, lr=args.lr, cuda=cuda, crayon=crayon)
-
-    if args.resume:
-        trainer.load(args.resume)
+    model = Pix2PixModel()
+    model.initialize(opt)
 
     dataset = PepeLoader(
-        args.img_dir,
-        transform=transforms.ToTensor(),
-        train=train
+        opt.dataroot,
+        transform=transforms.Compose(
+            [transforms.Scale(opt.loadSize),
+             transforms.RandomCrop(opt.fineSize),
+             transforms.ToTensor(),
+             transforms.Normalize((0.5, 0.5, 0.5),
+                                  (0.5, 0.5, 0.5))
+             ]
+        ),
+        train=True
     )
-
     dataloader = torch.utils.data.DataLoader(
-        dataset, batch_size=args.batch_size, shuffle=True, pin_memory=cuda
+        dataset, batch_size=2, shuffle=True, pin_memory=True
     )
 
-    if train:
-        for e in range(trainer.start_epoch, args.epoch):
-            trainer.train(dataloader, e)
-            trainer.save(e)
-            trainer.test(dataloader, e)
+    total_steps = 0
 
-    else:
-        trainer.test(dataloader, int(time.time()))
+    for e in range(1, opt.niter + opt.niter_decay + 1):
+        epoch_start_time = time.time()
+
+        dataset_size = len(dataset)
+        for i, data in enumerate(tqdm(dataloader)):
+            iter_start_time = time.time()
+            total_steps += opt.batchSize
+            epoch_iter = total_steps - dataset_size * (e - 1)
+            model.set_input({
+                'A': data[0],
+                'B': data[1]
+            })
+            model.optimize_parameters()
+
+        model.save(e)
+
+        if e > opt.niter:
+            model.update_learning_rate()
