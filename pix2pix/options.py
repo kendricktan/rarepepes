@@ -149,5 +149,5 @@ class TestOptions(BaseOptions):
         self.parser.add_argument('--which_epoch', type=str, default='latest',
                                  help='which epoch to load? set to latest to use latest cached model')
         self.parser.add_argument(
-            '--how_many', type=int, default=50, help='how many test images to run')
+            '--how_many', type=int, default=3, help='how many test images to run')
         self.isTrain = False
