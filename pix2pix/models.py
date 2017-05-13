@@ -35,6 +35,9 @@ class Pix2PixModel:
                                           opt.n_layers_D, opt.norm, use_sigmoid, self.gpu_ids)
         if not self.isTrain or opt.continue_train:
             self.load_network(self.netG, 'G', opt.which_epoch)
+
+            print('Loaded checkpoint at epoch {}'.format(opt.which_epoch))
+
             if self.isTrain:
                 self.load_network(self.netD, 'D', opt.which_epoch)
 

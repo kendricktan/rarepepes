@@ -14,6 +14,7 @@ from tqdm import tqdm
 from options import TrainOptions
 from loader import PepeLoader
 from models import Pix2PixModel
+from visualizer import Visualizer
 
 # CUDA_VISIBLE_DEVICES
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
@@ -22,7 +23,12 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 # Parse options
 opt = TrainOptions().parse()
 
+
 if __name__ == '__main__':
+    # Visdom
+    visualizer = Visualizer(opt)
+
+    # pix2pix model
     model = Pix2PixModel()
     model.initialize(opt)
 
@@ -39,7 +45,7 @@ if __name__ == '__main__':
         train=True
     )
     dataloader = torch.utils.data.DataLoader(
-        dataset, batch_size=2, shuffle=True, pin_memory=True
+        dataset, batch_size=opt.batchSize, shuffle=True, pin_memory=True
     )
 
     total_steps = 0
@@ -57,6 +63,19 @@ if __name__ == '__main__':
                 'B': data[1]
             })
             model.optimize_parameters()
+
+            if total_steps % opt.print_freq == 0:
+                errors = model.get_current_errors()
+                t = (time.time() - iter_start_time) / opt.batchSize
+                tqdm.write('Epoch: {} [{}/{}]\t'
+                           'G_GAN Loss: {:.4f}\t'
+                           'G_L1 Loss: {:.4f}\t'
+                           'D_real Loss: {:.4f}\t'
+                           'D_fake Loss: {:.4f}'.format(
+                               e, i, dataset_size,
+                               errors['G_GAN'], errors['G_L1'],
+                               errors['D_real'], errors['D_fake'])
+                           )
 
         model.save('latest')
         model.save(e)
