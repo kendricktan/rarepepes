@@ -58,6 +58,7 @@ if __name__ == '__main__':
             })
             model.optimize_parameters()
 
+        model.save('latest')
         model.save(e)
 
         if e > opt.niter:
