@@ -16,7 +16,6 @@ from tqdm import tqdm
 from options import TestOptions
 from loader import PepeLoader
 from models import Pix2PixModel
-from visualizer import Visualizer
 
 # CUDA_VISIBLE_DEVICES
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
