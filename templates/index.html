@@ -9,9 +9,7 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
         <style type='text/css'>
-        h1, h2, h3, h4 { font-family: "Nova Flat", sans-serif ; font-weight: normal; color: ##19B5FE; }
-
-		canvas {
+		canvas, img {
             border: 1px solid #ccc;
         }
 
@@ -32,18 +30,30 @@
     <body>
         <a href="https://github.com/kendricktan/rarepepes"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
 
-        <div style='padding-top: 100px' class="container">
+        <div style='padding-top: 70px' class="container">
+            <div class="row">
+                <div class="col-sm-2"> </div>
+                <div class="col-sm-8">
+                    <h3>rare pepe generator, inspired by <a href="#">edges2cats</a></h3>
+                </div>
+                <div class="col-sm-2"> </div>
+            </div>
+
+            <br/>
+
 			<div class="row">
-				<div style="text-align: right;" class="col-sm-4" id="canvas_div">
+				<div style="text-align: center;" class="col-sm-4" id="canvas_div">
+                    <h4>input</h4>
                     <p><canvas width=256 height=256 id="canvas_draw"></canvas></p>
 					<button style="width:256px" type='button' class="btn btn-info" onclick="clear_canvas()">clear</button>
 				</div>
 
 				<div class="col-sm-4" style="text-align: center;">
-					<button style='margin-left: 10px; margin-top: 35%' type='button' class="btn btn-info" onclick="convert()">pepes pls</button>
+					<button style='margin-left: 10px; margin-top: 35%' type='button' class="btn btn-info" onclick="convert()">process pepes</button>
 				</div>
 
-				<div style="text-align: left;" class="col-sm-4" style="text-align: center">
+				<div style="text-align: center;" class="col-sm-4" style="text-align: center">
+                    <h4>output</h4>
 					<img height=256 src="" id="converted_img"/>
 				</div>
 			</div>
