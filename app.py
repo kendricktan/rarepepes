@@ -1,8 +1,12 @@
+import re
 import os
 import sys
 import flask
-
+import base64
 import torchvision.transforms as transforms
+
+from io import BytesIO
+from PIL import Image
 
 # Append pix2pix filepath to app.py
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pix2pix')
@@ -51,7 +55,7 @@ def serve_pil_image(pil_img):
 # Generate pepe endpoint
 @app.route('/generate', methods=['POST'])
 def generate():
-    global trainer
+    global model, opt, transformers
 
     if 'img' in request.form:
         # Prepare to convert base64 png to image file

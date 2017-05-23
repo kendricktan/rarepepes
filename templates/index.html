@@ -1,104 +1,61 @@
 <html>
     <head>
-        <title>Draw like Bob Ross</title>
+        <title>Make me some rare pepes</title>
         <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
         <style type='text/css'>
-        body { padding-top: 50px; font-family: "Nova Flat", sans-serif; color: #F22613; }
         h1, h2, h3, h4 { font-family: "Nova Flat", sans-serif ; font-weight: normal; color: ##19B5FE; }
 
-        #wrapper { width: 800px; margin: 0 auto; }
-
-        header { text-align: center; }
-        header h1 { font-size: 46px; text-align: center; margin: 15px 10px; }
-
-        h1 { text-align: center; font-size: 26px; margin: 0 0 15px; }
-
-        canvas {
-            width: 256px;
-            height: 256px;
-            border: 3px solid #ccc;
+		canvas {
+            border: 1px solid #ccc;
         }
 
-        pre.source {
-            background: #e5eeee;
-            padding: 10px 20px;
-            width: 760px;
-            overflow-x: auto;
-            border: 1px solid #acc;
-        }
-
-        a {
-            text-decoration: none;
-            color: #6C7A89;
-        }
-
-        code { background: #cff; }
-
-        .draw { text-align: center; }
-
-        .button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px 32px;
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 60px;
+            line-height: 60px; /* Vertically center the text there */
+            background-color: #f5f5f5;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            width: 33%;
         }
 
-        .tools { margin-bottom: 10px; }
-        .tools a {
-            border: 1px solid black;
-            height: 30px;
-            line-height: 30px;
-            padding: 0 10px;
-            vertical-align: middle;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            color: black;
-            font-weight: bold;
-        }
         </style>
     </head>
 
     <body>
         <a href="https://github.com/kendricktan/rarepepes"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
 
-        <div>
-            <br/>
-            <h1>Input image</h1>
-            <div class="draw" id="colors_div">
-                <div id="paint-app"> </div>
-            </div>
+        <div style='padding-top: 100px' class="container">
+			<div class="row">
+				<div style="text-align: right;" class="col-sm-4" id="canvas_div">
+                    <p><canvas width=256 height=256 id="canvas_draw"></canvas></p>
+					<button style="width:256px" type='button' class="btn btn-info" onclick="clear_canvas()">clear</button>
+				</div>
 
-            <br/>
-            <div style="text-align: center">
-                <button class="button" onclick="convert()">Make me some rare pepes</button>
-            </div>
-            <br/>
+				<div class="col-sm-4" style="text-align: center;">
+					<button style='margin-left: 10px; margin-top: 35%' type='button' class="btn btn-info" onclick="convert()">pepes pls</button>
+				</div>
 
-            <h1>Output image</h1>
-            <div style="text-align: center">
-                <img height=256 src="" id="converted_img"/>
-            </div>
+				<div style="text-align: left;" class="col-sm-4" style="text-align: center">
+					<img height=256 src="" id="converted_img"/>
+				</div>
+			</div>
         </div>
 
-        <br/>
-        <hr width="75%"/>
-        <br/>
-        <footer>
-            <div style="text-align: center;">
-                <a href="https://kendricktan.github.io">kendricktan.github.io</a>
-            </div>
-        </footer>
-        <br/>
-        <hr width="75%"/>
-        <br/>
+        <footer class="footer">
+		    <div class="container">
+                <span class="text-muted">
+                    <a href="https://kendricktan.github.io">kendricktan.github.io</a>
+                </span>
+		    </div>
+		</footer>
 
         <script type="text/javascript">
             function convert(){
@@ -123,6 +80,6 @@
                 })
             }
         </script>
-       <script type="text/javascript" src="{{ url_for('static', filename = 'js/paint.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename = 'js/paint.min.js') }}"></script>
     </body>
 </html>
