@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-sm-2"> </div>
                 <div class="col-sm-8">
-                    <h3>rare pepe generator, inspired by <a href="#">edges2cats</a></h3>
+                    <h3>rare pepe generator, inspired by <a href="https://affinelayer.com/pixsrv/">edges2cats</a></h3>
                 </div>
                 <div class="col-sm-2"> </div>
             </div>
@@ -46,7 +46,7 @@
 				<div style="text-align: center;" class="col-sm-4" id="canvas_div">
                     <h4>input</h4>
                     <p><canvas width=256 height=256 id="canvas_draw"></canvas></p>
-					<button style="width:256px" type='button' class="btn btn-info" onclick="clear_canvas()">clear</button>
+					<button style="width:256px" type='button' class="btn btn-danger" onclick="clear_canvas()">clear</button>
 				</div>
 
 				<div class="col-sm-4" style="text-align: center;">
@@ -60,6 +60,31 @@
 			</div>
         </div>
 
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <h3>come hang w/ us</h3>
+                    <h4>
+                        <a href='https://www.facebook.com/groups/WeCodeAlot/'>
+                            fb.com/WeCodeAlot
+                        </a>
+                    </h4>
+                    <h4>
+                        <a href='https://twitter.com/qutcode'>
+                            t.co/qutcode
+                        </a>
+                    </h4>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+
         <footer class="footer">
 		    <div class="container">
                 <span class="text-muted">
@@ -71,10 +96,10 @@
         <script type="text/javascript">
             function convert(){
                 event.preventDefault();
+                document.getElementById("process_button").disabled = true;
 
                 var canvas = document.getElementById("canvas_draw");
                 var img = canvas.toDataURL("image/png");
-                document.getElementById("process_button").disabled = true;
                 img = img.replace("data:image/png;base64", "");
 
                 $.ajax({
