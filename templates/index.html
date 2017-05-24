@@ -95,7 +95,6 @@
 
         <script type="text/javascript">
             function convert(){
-                event.preventDefault();
                 document.getElementById("process_button").disabled = true;
 
                 var canvas = document.getElementById("canvas_draw");
@@ -114,6 +113,7 @@
                     },
                     error: function(data){
                         document.getElementById("process_button").disabled = false;
+                        alert('Unknown error occurred, please try using chrome');
                         console.log(data);
                     }
                 })
