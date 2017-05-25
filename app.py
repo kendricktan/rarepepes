@@ -62,6 +62,7 @@ def generate():
         img_data = re.sub('^data:image/.+;base64,', '', request.form['img'])
         img_data = base64.b64decode(img_data)
         img = Image.open(BytesIO(img_data)).convert('RGB')
+        img.show()
         img = convert_image(img, model, transformers)
         return serve_pil_image(img)
 

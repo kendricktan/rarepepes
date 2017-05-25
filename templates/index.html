@@ -3,6 +3,7 @@
         <title>pepes</title>
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
         <script type="text/javascript" src="{{ url_for('static', filename = 'js/jquery-3.2.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename = 'js/sketch.min.js') }}"></script>
         <!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -46,7 +47,7 @@
 				<div style="text-align: center;" class="col-sm-4" id="canvas_div">
                     <h4>input</h4>
                     <p><canvas width=256 height=256 id="canvas_draw"></canvas></p>
-					<button style="width:256px" type='button' class="btn btn-danger" onclick="clear_canvas()">clear</button>
+                    <p><button style="width: 256" class="btn btn-danger" onclick="reset_canvas()">Clear</button></p>
 				</div>
 
 				<div class="col-sm-4" style="text-align: center;">
@@ -94,12 +95,24 @@
 		</footer>
 
         <script type="text/javascript">
+            $(function() {
+                $('#canvas_draw').sketch();
+            });
+
+            function reset_canvas(){
+                $('#canvas_draw').sketch().actions = [];
+
+                var ctx = document.getElementById('canvas_draw').getContext('2d');
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, 256, 256);
+            }
+
             function convert(){
                 document.getElementById("process_button").disabled = true;
 
                 var canvas = document.getElementById("canvas_draw");
-                var img = canvas.toDataURL("image/png");
-                img = img.replace("data:image/png;base64", "");
+                var img = canvas.toDataURL("image/jpg");
+                img = img.replace("data:image/jpg;base64,", "");
 
                 $.ajax({
                     type: "POST",
@@ -119,7 +132,6 @@
                 })
             }
         </script>
-        <script type="text/javascript" src="{{ url_for('static', filename = 'js/paint.min.js') }}"></script>
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -130,5 +142,6 @@
           ga('send', 'pageview');
 
         </script>
+        <script type="text/javascript" src="{{ url_for('static', filename = 'js/paint.min.js') }}"></script>
     </body>
 </html>
