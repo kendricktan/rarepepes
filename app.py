@@ -61,20 +61,23 @@ def serve_pil_image(pil_img):
 def generate():
     global model, opt, transformers
 
-    if 'img' in request.json:
-        # Prepare to convert base64 png to image file
+    if 'img' in request.form:
+        img_data = re.sub('^data:image/.+;base64,', '', request.form['img'])
+        img_data = base64.b64decode(img_data)
+        img = Image.open(BytesIO(img_data)).convert('RGB')
+        img = img.resize((256, 256), Image.BILINEAR)
+        img = convert_image(img, model, transformers)
+        return jsonify({'img': serve_pil_image(img).decode('utf-8')})
+
+    elif 'img' in request.json:
         img_data = re.sub('^data:image/.+;base64,', '', request.json['img'])
         img_data = base64.b64decode(img_data)
         img = Image.open(BytesIO(img_data)).convert('RGB')
         img = img.resize((256, 256), Image.BILINEAR)
         img = convert_image(img, model, transformers)
-        ret = {'img': serve_pil_image(img).decode('utf-8')}
+        return jsonify({'img': serve_pil_image(img).decode('utf-8')})
 
-    else:
-        ret = {'error': 'img not found'}
-
-    return jsonify(ret)
-
+    return jsonify({'error': 'img not found'})
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, threaded=True)
