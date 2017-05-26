@@ -73,8 +73,11 @@ if __name__ == '__main__':
                                errors['D_real'], errors['D_fake'])
                            )
 
-        model.save('latest')
-        model.save(e)
+        if e % opt.save_latest_freq == 0 and e >= opt.save_latest_freq:
+            model.save('latest')
+        
+        if e % opt.save_epoch_freq == 0 and e >= opt.save_epoch_freq:
+            model.save(e)
 
         if e > opt.niter:
             model.update_learning_rate()
