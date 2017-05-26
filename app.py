@@ -62,7 +62,6 @@ def generate():
         img_data = re.sub('^data:image/.+;base64,', '', request.form['img'])
         img_data = base64.b64decode(img_data)
         img = Image.open(BytesIO(img_data)).convert('RGB')
-        img.show()
         img = convert_image(img, model, transformers)
         return serve_pil_image(img)
 
@@ -70,4 +69,4 @@ def generate():
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', post=8000, threaded=True)
+    app.run(host='127.0.0.1', port=8000, threaded=True)
