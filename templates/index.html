@@ -111,23 +111,25 @@
                 document.getElementById("process_button").disabled = true;
 
                 var canvas = document.getElementById("canvas_draw");
-                var img = canvas.toDataURL("image/jpg");
-                img = img.replace("data:image/jpg;base64,", "");
+                var img = canvas.toDataURL("image/png");
+                img = img.replace("data:image/png;base64,", "");
 
                 $.ajax({
                     type: "POST",
                     url: "/generate",
-                    data: {
+                    data: JSON.stringify({
                         'img': img
-                    },
+                    }),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
                     success: function(data){
+                        img = data['img']
                         document.getElementById("process_button").disabled = false;
-                        document.getElementById("converted_img").src = "data:image/png;base64," + data;
+                        document.getElementById("converted_img").src = "data:image/png;base64," + img;
                     },
                     error: function(data){
                         document.getElementById("process_button").disabled = false;
-                        alert('Unknown error occurred, please try using chrome');
-                        console.log(data);
+                        console.log(data['error']);
                     }
                 })
             }

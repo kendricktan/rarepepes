@@ -16,7 +16,7 @@ if module_path not in sys.path:
 from convert import convert_image
 from models import Pix2PixModel
 from options import TestOptions
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, jsonify
 
 # Global Vars
 # CUDA_VISIBLE_DEVICES
@@ -57,15 +57,19 @@ def serve_pil_image(pil_img):
 def generate():
     global model, opt, transformers
 
-    if 'img' in request.form:
+    if 'img' in request.json:
         # Prepare to convert base64 png to image file
-        img_data = re.sub('^data:image/.+;base64,', '', request.form['img'])
+        img_data = re.sub('^data:image/.+;base64,', '', request.json['img'])
         img_data = base64.b64decode(img_data)
         img = Image.open(BytesIO(img_data)).convert('RGB')
+        img = img.resize((256, 256), Image.BILINEAR)
         img = convert_image(img, model, transformers)
-        return serve_pil_image(img)
+        ret = {'img': serve_pil_image(img).decode('utf-8')}
 
-    return {'error': 'img not found'}
+    else:
+        ret = {'error': 'img not found'}
+
+    return jsonify(ret)
 
 
 if __name__ == '__main__':
