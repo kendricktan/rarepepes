@@ -44,6 +44,10 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/api')
+def api_page():
+    return render_template('api.html')
+
 
 # Helper function to serve PIL image
 def serve_pil_image(pil_img):
