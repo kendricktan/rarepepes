@@ -25,9 +25,13 @@ def random_crop(img_size, s):
 
 
 class PepeLoader(data.Dataset):
-    def __init__(self, imgdir, invert_x=True, random_seed=42, transform=None, train=True):
-        self.x_dir = sorted(glob.glob(os.path.join(
-            imgdir, os.path.join('x', '*.png'))))
+    def __init__(self, imgdir, use_enhanced=True, random_seed=42, transform=None, train=True):
+        if use_enhanced:
+            self.x_dir = sorted(glob.glob(os.path.join(
+                imgdir, os.path.join('enhanced_x', '*.png'))))
+        else:
+            self.x_dir = sorted(glob.glob(os.path.join(
+                imgdir, os.path.join('x', '*.png'))))
         self.y_dir = sorted(glob.glob(os.path.join(
             imgdir, os.path.join('y', '*.png'))))
 

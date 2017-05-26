@@ -20,11 +20,16 @@ from tqdm import tqdm
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pepe data X enhancer')
     parser.add_argument('--img-dir', required=True, type=str)
+    parser.add_argument('--out-dir', required=True, type=str)
     args = parser.parse_args()
 
     # Images
     files = glob.glob(os.path.join(args.img_dir, '*.png')) + \
         glob.glob(os.path.join(args.img_dir, '*.jpg'))
+
+    raw_out_dir = os.path.join(args.out_dir)
+    if not os.path.exists(raw_out_dir):
+        os.makedirs(raw_out_dir)
 
     # Invert and dilate
     for i in tqdm(range(len(files))):
@@ -38,6 +43,5 @@ if __name__ == '__main__':
         dilated = skmo.dilation(edges, skmo.square(3))
         eroded = skmo.erosion(dilated, skmo.square(2))
 
-        skio.imshow(eroded)
-        plt.show()
+        skio.imsave(os.path.join(raw_out_dir, '{}.png'.format(i)), eroded)
 
