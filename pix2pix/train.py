@@ -14,7 +14,6 @@ from tqdm import tqdm
 from options import TrainOptions
 from loader import PepeLoader
 from models import Pix2PixModel
-from visualizer import Visualizer
 
 # CUDA_VISIBLE_DEVICES
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
@@ -25,9 +24,6 @@ opt = TrainOptions().parse()
 
 
 if __name__ == '__main__':
-    # Visdom
-    visualizer = Visualizer(opt)
-
     # pix2pix model
     model = Pix2PixModel()
     model.initialize(opt)
