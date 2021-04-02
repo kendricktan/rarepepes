@@ -18,8 +18,5 @@ conda install pytorch torchvision -c soumith
 python app.py --checkpoints_dir PRE_TRAINED_WEIGHTS_LOCATION
 ```
 
-# Dataset
-The pepe dataset can be downloaded from [dropbox](https://www.dropbox.com/s/mgqiqermp0o9uzp/rarepepes_data.tar.gz?dl=0)
-
 # References
 1. [pix2pix](https://arxiv.org/abs/1611.07004)
